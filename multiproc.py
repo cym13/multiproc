@@ -73,7 +73,7 @@ def function(number, param, fs):
     fs = replace(fs, number, re.compile("([^%])%n"))
     fs = fs.replace("%%", "%")
 
-    subprocess.call(fs, shell=True)
+    subprocess.call(fs, shell=True, stdout=sys.stdout, stderr=sys.stdout)
     print("[%s] End" % number, file=sys.stderr)
 
 
