@@ -1,0 +1,51 @@
+Description
+===========
+
+Multiproc allows one to use a pool of workers with bash. It provides a
+reliable way to launch a lot of concurrent processes while keeping the
+control of the number of these processes.
+
+Documentation
+=============
+
+Usage: multiproc [-h] [-p N] FORMAT
+
+Arguments:
+    FORMAT     The command to be run in each process.
+               "%s"    input string
+               "%n"    number of the process
+               "%%"    litteral "%"
+
+Options:
+    -h, --help          Print this help and exit
+    -p, --process N     Number of processes to be used.
+                        Default is the number of CPU
+
+Exemple
+=======
+
+Download multiple files where urls.txt contains the urls list with 10 processes:
+
+    $ cat urls.txt | multiproc -p 10 "wget %s -O file.%n"
+
+
+Dependencies
+============
+
+docopt   https://github.com/docopt/docopt or "pip install docopt"
+
+License
+=======
+
+This program is under the GPLv3 License.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+Contact
+=======
+
+Main developper: Cédric Picard
+Email:           cedric.picard@efrei.net
+Twitter:         @Cym13
+GPG:             383A 76B9 D68D 2BD6 9D2B  4716 E3B9 F4FE 5CED 42CB
