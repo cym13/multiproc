@@ -21,7 +21,7 @@ Options:
     -p, --process N     Number of processes to be used.
                         Default is the number of CPU
 
-Exemple
+Example
 =======
 
 Download multiple files where urls.txt contains the urls list with 10 processes:

@@ -34,7 +34,7 @@ Options:
     -p, --process N     Number of processes to be used.
                         Default is the number of CPU
 
-Exemple: download multiple files where urls.txt contains the urls list
+Example: download multiple files where urls.txt contains the urls list
 
     $ cat urls.txt | multiproc -p 10 "wget %s -O file.%n"
 """
