@@ -21,7 +21,7 @@
 """
 Multiprocessing from the command-line.
 
-Usage: multiproc [-h] [-p N] FORMAT
+Usage: multiproc [-h] [-q] [-p N] FORMAT
 
 Arguments:
     FORMAT     The command to be run in each process.
@@ -30,9 +30,11 @@ Arguments:
                "%%"    litteral "%"
 
 Options:
-    -h, --help          Print this help and exit
+    -h, --help          Print this help and exit.
+    -q, --quiet         No multiproc output.
+                        This doesn't cover potential command output.
     -p, --process N     Number of processes to be used.
-                        Default is the number of CPU
+                        Default is the number of CPU.
 
 Example: download multiple files where urls.txt contains the urls list
 
@@ -61,21 +63,22 @@ def replace(fs, param, regex):
     return fs
 
 
-def function(number, param, fs):
+def function(number, param, fs, quiet):
     """
     The function to be given to the pool's workers.
     """
     number_re = re.compile("([^%])%n")
 
-    print("[%s] Start" % number, file=sys.stderr)
+    if not quiet:
+        print("[%s] Start" % number, file=sys.stderr)
 
-    print(fs)
     fs = replace(fs, "'%s'" % param,  re.compile("([^%])%s"))
     fs = replace(fs, number, re.compile("([^%])%n"))
     fs = fs.replace("%%", "%")
 
     subprocess.call(fs, shell=True, stdout=sys.stdout, stderr=sys.stdout)
-    print("[%s] End" % number, file=sys.stderr)
+    if not quiet:
+        print("[%s] End" % number, file=sys.stderr)
 
 
 def main():
@@ -85,7 +88,7 @@ def main():
     if p_process:
         p_process = int(p_process)
     pool = Pool(p_process)
-    pool.starmap(function, [(n, p[:-1], args["FORMAT"])
+    pool.starmap(function, [(n, p[:-1], args["FORMAT"], args["--quiet"])
                             for (n, p) in enumerate(sys.stdin.readlines())])
 
 
