@@ -69,7 +69,8 @@ def function(number, param, fs):
 
     print("[%s] Start" % number, file=sys.stderr)
 
-    fs = replace(fs, param,  re.compile("([^%])%s"))
+    print(fs)
+    fs = replace(fs, "'%s'" % param,  re.compile("([^%])%s"))
     fs = replace(fs, number, re.compile("([^%])%n"))
     fs = fs.replace("%%", "%")
 
