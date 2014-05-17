@@ -32,7 +32,7 @@ Arguments:
 Options:
     -h, --help          Print this help and exit.
     -q, --quiet         No multiproc output.
-    -0                  Use \0 as delimiter
+    -0                  Use NUL as delimiter
                         This doesn't cover potential command output.
     -p, --process N     Number of processes to be used.
                         Default is the number of CPU.
