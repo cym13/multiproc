@@ -21,7 +21,7 @@
 """
 Multiprocessing from the command-line.
 
-Usage: multiproc [-h] [-q] [-p N] FORMAT
+Usage: multiproc [-h] [-0] [-q] [-p N] FORMAT
 
 Arguments:
     FORMAT     The command to be run in each process.
@@ -32,6 +32,7 @@ Arguments:
 Options:
     -h, --help          Print this help and exit.
     -q, --quiet         No multiproc output.
+    -0                  Use \0 as delimiter
                         This doesn't cover potential command output.
     -p, --process N     Number of processes to be used.
                         Default is the number of CPU.
@@ -85,11 +86,31 @@ def main():
     args = docopt(__doc__)
 
     p_process = args["--process"]
+
     if p_process:
         p_process = int(p_process)
-    pool = Pool(p_process)
-    pool.starmap(function, [(n, p[:-1], args["FORMAT"], args["--quiet"])
-                            for (n, p) in enumerate(sys.stdin.readlines())])
+
+    # Dealing with the NUL character is pretty ugly...
+    if not args["-0"]:
+        inputs = (x[:-1] for x in sys.stdin.readlines())
+    else:
+        inputs = []
+        buff   = ""
+        for char in sys.stdin.read():
+            if char != "\0":
+                buff += char
+            else:
+                inputs.append(buff)
+                buff = ""
+
+    try:
+        pool = Pool(p_process)
+        pool.starmap(function, [(n, p, args["FORMAT"], args["--quiet"])
+                                for (n, p) in enumerate(inputs)])
+    except TypeError as e:
+        print("TypeError:", e)
+        print("Is the -0 option what you want?")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
