@@ -73,7 +73,7 @@ def function(number, param, fs, verbose):
     if verbose:
         print("[%s] Start" % number, file=sys.stderr)
 
-    fs = replace(fs, "'%s'" % param,  re.compile("([^%])%s"))
+    fs = replace(fs, param,  re.compile("([^%])%s"))
     fs = replace(fs, number, re.compile("([^%])%n"))
     fs = fs.replace("%%", "%")
 
@@ -90,18 +90,8 @@ def main():
     if p_process:
         p_process = int(p_process)
 
-    # Dealing with the NUL character is pretty ugly...
-    if not args["-0"]:
-        inputs = (x[:-1] for x in sys.stdin.readlines())
-    else:
-        inputs = []
-        buff   = ""
-        for char in sys.stdin.read():
-            if char != "\0":
-                buff += char
-            else:
-                inputs.append(buff)
-                buff = ""
+    delimiter = "\0" if args["-0"] else "\n"
+    inputs = re.split(delimiter, sys.stdin.read())
 
     try:
         pool = Pool(p_process)
