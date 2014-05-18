@@ -8,9 +8,7 @@ control of the number of these processes.
 Documentation
 =============
 
-Multiprocessing from the command-line.
-
-Usage: multiproc [-h] [-0] [-q] [-p N] FORMAT
+Usage: multiproc [-h] [-0] [-v] [-p N] FORMAT
 
 Arguments:
     FORMAT     The command to be run in each process.
@@ -20,15 +18,11 @@ Arguments:
 
 Options:
     -h, --help          Print this help and exit.
-    -q, --quiet         No multiproc output.
+    -v, --verbose       Set verbose output
     -0                  Use NUL as delimiter
                         This doesn't cover potential command output.
     -p, --process N     Number of processes to be used.
                         Default is the number of CPU.
-
-Example: download multiple files where urls.txt contains the urls list
-
-    $ cat urls.txt | multiproc -p 10 "wget %s -O file.%n"
 
 Example
 =======
@@ -39,7 +33,7 @@ Download multiple files where urls.txt contains the urls list with 10 processes:
 
 Work with files
 
-    $ find . -iname "*.c" -print0 | multiproc -q -0 "gcc %n"
+    $ find . -iname "*.c" -print0 | multiproc -v -0 "gcc %n"
 
 
 Dependencies

@@ -21,7 +21,7 @@
 """
 Multiprocessing from the command-line.
 
-Usage: multiproc [-h] [-0] [-q] [-p N] FORMAT
+Usage: multiproc [-h] [-0] [-v] [-p N] FORMAT
 
 Arguments:
     FORMAT     The command to be run in each process.
@@ -31,7 +31,7 @@ Arguments:
 
 Options:
     -h, --help          Print this help and exit.
-    -q, --quiet         No multiproc output.
+    -v, --verbose       Set verbose output
     -0                  Use NUL as delimiter
                         This doesn't cover potential command output.
     -p, --process N     Number of processes to be used.
@@ -64,13 +64,13 @@ def replace(fs, param, regex):
     return fs
 
 
-def function(number, param, fs, quiet):
+def function(number, param, fs, verbose):
     """
     The function to be given to the pool's workers.
     """
     number_re = re.compile("([^%])%n")
 
-    if not quiet:
+    if verbose:
         print("[%s] Start" % number, file=sys.stderr)
 
     fs = replace(fs, "'%s'" % param,  re.compile("([^%])%s"))
@@ -78,7 +78,7 @@ def function(number, param, fs, quiet):
     fs = fs.replace("%%", "%")
 
     subprocess.call(fs, shell=True, stdout=sys.stdout, stderr=sys.stdout)
-    if not quiet:
+    if verbose:
         print("[%s] End" % number, file=sys.stderr)
 
 
@@ -105,7 +105,7 @@ def main():
 
     try:
         pool = Pool(p_process)
-        pool.starmap(function, [(n, p, args["FORMAT"], args["--quiet"])
+        pool.starmap(function, [(n, p, args["FORMAT"], args["--verbose"])
                                 for (n, p) in enumerate(inputs)])
     except TypeError as e:
         print("TypeError:", e)
