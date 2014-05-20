@@ -55,10 +55,9 @@ def replace(fs, param, regex):
     """
     search = True
     count = 0
-    search = regex.search(fs)
     while search:
-        fs = regex.sub(search.groups()[count] + str(param), fs)
         search = regex.search(fs)
+        fs = regex.sub(search.groups()[count] + str(param), fs)
         count += 1
 
     return fs
