@@ -57,8 +57,9 @@ def replace(fs, param, regex):
     count = 0
     while search:
         search = regex.search(fs)
-        fs = regex.sub(search.groups()[count] + str(param), fs)
-        count += 1
+        if search:
+            fs = regex.sub(search.groups()[count] + str(param), fs)
+            count += 1
 
     return fs
 
@@ -72,8 +73,8 @@ def function(number, param, fs, verbose):
     if verbose:
         print("[%s] Start" % number, file=sys.stderr)
 
-    fs = replace(fs, param,  re.compile("([^%])%s"))
     fs = replace(fs, number, re.compile("([^%])%n"))
+    fs = replace(fs, param,  re.compile("([^%])%s"))
     fs = fs.replace("%%", "%")
 
     subprocess.call(fs, shell=True, stdout=sys.stdout, stderr=sys.stdout)
@@ -89,8 +90,10 @@ def main():
     if p_process:
         p_process = int(p_process)
 
-    delimiter = "\0" if args["-0"] else "\n"
-    inputs = re.split(delimiter, sys.stdin.read())
+    if args["-0"]:
+        inputs = re.split('\0', sys.stdin.read())
+    else:
+        inputs = sys.stdin.read().splitlines()
 
     try:
         pool = Pool(p_process)
