@@ -21,7 +21,7 @@
 """
 Multiprocessing from the command-line.
 
-Usage: multiproc [-h] [-0] [-v] [-p N] FORMAT
+Usage: multiproc [-h] [-0] [-v] [-p N] [-1] FORMAT
 
 Arguments:
     FORMAT     The command to be run in each process.
@@ -36,11 +36,16 @@ Options:
                         This doesn't cover potential command output.
     -p, --process N     Number of processes to be used.
                         Default is the number of CPU.
+    -1, --uniq          Equivalent to -p1
 
 Example: download multiple files where urls.txt contains the urls list
 
     $ cat urls.txt | multiproc -p 10 "wget %s -O file.%n"
 """
+
+
+VERSION = '1.0.1'
+
 
 import re
 import sys
@@ -83,7 +88,7 @@ def function(number, param, fs, verbose):
 
 
 def main():
-    args = docopt(__doc__)
+    args = docopt(__doc__, version=VERSION)
 
     p_process = args["--process"]
 
